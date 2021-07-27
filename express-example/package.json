@@ -1,0 +1,28 @@
+{
+  "name": "express-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": ""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "ioredis": "^4.27.6",
+    "joi": "^17.4.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.95.8",
+    "lodash": "^4.17.21",
+    "log4js": "^6.3.0",
+    "moment": "^2.29.1",
+    "mysql": "^2.18.1",
+    "superagent": "^6.1.0",
+    "uuid": "^8.3.2"
+  }
+}
