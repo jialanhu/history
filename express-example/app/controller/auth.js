@@ -38,7 +38,7 @@ module.exports = {
         const input = await validator.validate(
             req.input,
             authValidation.login.schema,
-            authValidation.options
+            validator.options
         );
         const result = await authService.login(input);
         response.map(res, result);

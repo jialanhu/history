@@ -18,10 +18,10 @@ module.exports = async function (req, res, next) {
         requestTimestampValidator(req);
 
         // jwt验证
-        let {uid, uuid} = jwtValidator(req);
+        const {uid, uuid} = jwtValidator(req);
 
         // 校验token
-        req.cacheSystemUserInfo = await tokenValidator(uid, uuid);
+        req.cacheUserInfo = await tokenValidator(uid, uuid);
 
         // 校验参数签名,结合timestamp,可以防止重放攻击
         await signValidator(req, uid, uuid);
@@ -47,7 +47,7 @@ async function getUserCache (id) {
  */
 function requestTimestampValidator (req) {
     // 这是毫秒时间戳
-    let requestTimestamp = req.headers.timestamp;
+    const requestTimestamp = req.headers.timestamp;
     // 客户端时间可能与服务器时间有偏差,允许范围 30秒
     if (!requestTimestamp || ((keyDefines.REQUEST_TIME_DIFFER) < Math.abs(dateUtils.getNowUnix() - requestTimestamp))) {
         throw new ApiError('access.timeDifference');
@@ -60,11 +60,11 @@ function requestTimestampValidator (req) {
  * @returns {{uid: Number, token: String}}
  */
 function jwtValidator (req) {
-    let Authorization = req.headers.Authorization;
+    const authorization = req.headers.authorization;
     try {
-        return jwt.verifyToken(Authorization)
+        return jwt.verifyToken(authorization)
     } catch(err) {
-        logger.getLogger('exception').error('basePermission用户JWT校验失败, Authorization: %s', Authorization);
+        logger.getLogger('exception').error('basePermission用户JWT校验失败, authorization: %s', authorization);
         throw new ApiError('access.tokenDifference');
     }
 }
@@ -76,7 +76,7 @@ function jwtValidator (req) {
  * @returns {Promise<void>}
  */
 async function tokenValidator (uid, uuid) {
-    let cacheUserInfo = await getUserCache(uid);
+    const cacheUserInfo = await getUserCache(uid);
     if (!cacheUserInfo) {
         logger.getLogger('exception').error('Permission用户权限校验失败 cacheUserInfo不存在, uid:%s, uuid:%s', uid, uuid);
         throw new ApiError('access.tokenNotExist');
@@ -93,19 +93,19 @@ async function tokenValidator (uid, uuid) {
  * 签名校验
  */
 async function signValidator (req, uid, uuid) {
-    let clientSign = req.headers.sign;
+    const clientSign = req.headers.sign;
     if (!clientSign) {
         throw new ApiError('access.signError');
     }
-    let signObj = {uid, timestamp: req.headers.timestamp, ...req.input};
-    let sign = getSign(signObj, uuid);
+    const signObj = {uid, timestamp: req.headers.timestamp, ...req.input};
+    const sign = getSign(signObj, uuid);
     if (clientSign !== sign) {
         throw new ApiError('access.signError');
     }
-    let requestSignRedisKey = keyDefines.requestSignRedisKey(sign);
-    let jsonSignObj = JSON.stringify(signObj);
+    const requestSignRedisKey = keyDefines.requestSignRedisKey(sign);
+    const jsonSignObj = JSON.stringify(signObj);
     if (await redis.exists(requestSignRedisKey)) {
-        let cacheSign = await redis.get(requestSignRedisKey);
+        const cacheSign = await redis.get(requestSignRedisKey);
         if (cacheSign !== jsonSignObj) {
             logger.getLogger('error').error('Permission签名冲突 cacheSign:%s, sign:%s', cacheSign, jsonSignObj);
             throw new ApiError('access.signCollision');
@@ -124,8 +124,8 @@ async function signValidator (req, uid, uuid) {
  * @returns {string}
  */
 function getSign (obj, uuid) {
-    let list = Object.keys(obj).sort();
-    let strList = [];
+    const list = Object.keys(obj).sort();
+    const strList = [];
     for (let i = 0; i < list.length; ++i) {
         // 参数的值为空不参与签名
         if (!obj[list[i]] && obj[list[i]] !== 0) {
