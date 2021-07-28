@@ -61,7 +61,5 @@
 	app.js 服务应用程序入口文件
 	
 	test 测试目录
-	    controller
-	    middleware
 	
 	package.js 应用包配置文件

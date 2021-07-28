@@ -12,7 +12,7 @@ module.exports = {
         json.code = errCode;
         json.data = data ? data : {};
         json.msg = msg;
-        res.body = JSON.stringify(json);
+        res.body = json;
         res.httpStatus = httpStatus;
     },
 

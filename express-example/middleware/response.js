@@ -3,5 +3,5 @@ module.exports = async function (req, res, next) {
     if (res.timeout) return;
     res.type('application/json; charset=utf-8')
         .status(res.httpStatus || 404)
-        .send(res.body);
+        .send(JSON.stringify(res.body));
 };

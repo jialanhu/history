@@ -55,5 +55,5 @@ module.exports = async function (e, req, res, next) {
     response.output(res,{}, e.code || 1, msg, status);
     res.type('application/json; charset=utf-8')
         .status(res.httpStatus)
-        .send(res.body);
+        .send(JSON.stringify(res.body));
 };
