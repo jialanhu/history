@@ -1,0 +1,57 @@
+version: "3"
+
+services:
+  node:
+    image: node:latest
+    container_name: node
+    volumes:
+      - /code:/code
+    tty: true
+    environment:
+      TZ: Asia/Shanghai
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/etc/redis/redis.conf
+    command: redis-server /etc/redis/redis.conf
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    ports:
+      - 3306:3306
+    environment:
+      # root 用户的密码
+      MYSQL_ROOT_PASSWORD: secret
+      # 普通用户的账号密码
+      MYSQL_USER: normal
+      MYSQL_PASSWORD: secret
+      TZ: Asia/Shanghai
+    volumes:
+      # 慢sql日志
+      - ./mysql/log:/mysql/data
+      - /var/lib/mysql
+      - ./mysql/config.cnf:/etc/mysql/conf.d/config.cnf
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d
+      # nginx 访问日志
+      - ./nginx/log:/var/log/nginx
+      - /code:/code
+    environment:
+      TZ: Asia/Shanghai
+
+
+ 

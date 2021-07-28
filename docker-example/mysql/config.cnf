@@ -1,0 +1,19 @@
+[client]
+default-character-set = utf8mb4
+
+[mysql]
+default-character-set = utf8mb4
+
+[mysqld]
+# 开启慢日志记录
+slow_query_log = ON
+# 慢日志文件位置
+slow_query_log_file = /mysql/data/slow.log
+# 慢日志时间(单位秒)
+long_query_time = 1
+init-connect='SET NAMES utf8mb4'
+collation_server=utf8mb4_unicode_ci
+character_set_server=utf8mb4
+skip-character-set-client-handshake
+# 开启严格模式
+#sql-mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
