@@ -1,13 +1,9 @@
-const redis = require('./../../library/db.js').redis;
 const utils = require('./../../util/utils.js');
 const ApiError = require('./../../library/apiError.js');
 const encrypt = require("../../library/encrypt");
-const jwt = require('./../../library/jwt.js');
 const userModel = require('./../model/user.js');
-const keyDefines = require('./../../library/keyDefines.js');
 
 module.exports = {
-
     /**
      * 修改密码
      * @param id

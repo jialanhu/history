@@ -1,5 +1,6 @@
 const logger = require('./../util/logger.js');
 const UUID = require('uuid');
+const encrypt = require('./../library/encrypt.js');
 
 module.exports = {
     genUUID: function () {
@@ -67,5 +68,23 @@ module.exports = {
             })
         });
         return router;
+    },
+
+    /**
+     * 获取参数签名
+     * @returns {string}
+     */
+    getSign: function (obj, uuid) {
+        const list = Object.keys(obj).sort();
+        const strList = [];
+        for (let i = 0; i < list.length; ++i) {
+            // 参数的值为空不参与签名
+            if (!obj[list[i]] && obj[list[i]] !== 0) {
+                continue;
+            }
+            strList.push(`${list[i]}=${obj[list[i]]}`);
+        }
+        strList.push(`uuid=${uuid}`);
+        return encrypt.hmacSha256(strList.join('&'), uuid).toUpperCase();
     },
 };

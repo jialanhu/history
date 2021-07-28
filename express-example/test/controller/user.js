@@ -1,7 +1,6 @@
 const chai = require('chai');
 
 const userController = require('./../../app/controller/user.js');
-const username = 'test';
 const password = 'password';
 const password2 = 'password2';
 
@@ -21,6 +20,7 @@ describe("user", () => {
             });
         });
 
+        // 旧密码错误
         it('error old_password', (done) => {
             const req = {
                 input: {old_password: password, new_password: password2},
@@ -34,6 +34,7 @@ describe("user", () => {
             });
         });
 
+        // 重置为原来状态
         it('reset', (done) => {
             const req = {
                 input: {old_password: password2, new_password: password},
@@ -41,8 +42,8 @@ describe("user", () => {
             };
             const res = {};
             userController.changePassword(req, res).then(() => {
-                should.equal(res.httpStatus, 200);  //http状态正常
-                should.equal(res.body.code, 0);     //业务状态正常
+                should.equal(res.httpStatus, 200);
+                should.equal(res.body.code, 0);
                 done();
             });
         });

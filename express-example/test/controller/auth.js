@@ -17,6 +17,7 @@ describe("auth", () => {
             });
         });
 
+        // 密码错误
         it('error password', (done) => {
             const req = {input: {username, password: "error password"}};
             const res = {};

@@ -3,11 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
-    "test": ""
+    "test": "nyc --reporter=cobertura --reporter=html mocha './test/*/*' --exit"
   },
   "author": "",
   "license": "ISC",

@@ -3,7 +3,6 @@ const keyDefines = require('./../library/keyDefines.js');
 const ApiError = require('./../library/apiError.js');
 const logger = require('./../util/logger.js');
 const utils = require('./../util/utils.js');
-const encrypt = require('./../library/encrypt.js');
 const jwt = require('./../library/jwt.js');
 const dateUtils = require('./../util/dateUtils.js');
 
@@ -98,7 +97,7 @@ async function signValidator (req, uid, uuid) {
         throw new ApiError('access.signError');
     }
     const signObj = {uid, timestamp: req.headers.timestamp, ...req.input};
-    const sign = getSign(signObj, uuid);
+    const sign = utils.getSign(signObj, uuid);
     if (clientSign !== sign) {
         throw new ApiError('access.signError');
     }
@@ -117,22 +116,4 @@ async function signValidator (req, uid, uuid) {
     if (!result) {
         throw new ApiError('access.requestRepetition');
     }
-}
-
-/**
- * 获取参数签名
- * @returns {string}
- */
-function getSign (obj, uuid) {
-    const list = Object.keys(obj).sort();
-    const strList = [];
-    for (let i = 0; i < list.length; ++i) {
-        // 参数的值为空不参与签名
-        if (!obj[list[i]] && obj[list[i]] !== 0) {
-            continue;
-        }
-        strList.push(`${list[i]}=${obj[list[i]]}`);
-    }
-    strList.push(`uuid=${uuid}`);
-    return encrypt.hmacSha256(strList.join('&'), uuid).toUpperCase()
 }
