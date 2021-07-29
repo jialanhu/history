@@ -7,6 +7,7 @@ services:
     volumes:
       - /code:/code
     tty: true
+    working_dir: /code
     environment:
       TZ: Asia/Shanghai
 
@@ -52,6 +53,17 @@ services:
       - /code:/code
     environment:
       TZ: Asia/Shanghai
+
+  jenkins:
+    image: jenkinsci/blueocean
+    container_name: jenkins
+    ports:
+      - 8080:8080
+      - 50000:50000
+    user: root
+    volumes:
+      - D:/code/jenkins:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
 
 
  
