@@ -5,7 +5,7 @@ const response = require('./../../util/response.js');
 
 module.exports = {
     /**
-     * @api {post} /api/example/user/v1/change_password  修改密码
+     * @api {put} /api/example/user/v1/change_password  修改密码
      * @apiName changePassword
      * @apiGroup user
      * @apiDescription 修改密码

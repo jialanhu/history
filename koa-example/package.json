@@ -1,0 +1,25 @@
+{
+  "name": "koa-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": ""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ioredis": "^4.27.6",
+    "joi": "^17.4.1",
+    "knex": "^0.95.8",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^10.0.0",
+    "koa-xml-body": "^2.2.0",
+    "log4js": "^6.3.0",
+    "moment": "^2.29.1",
+    "mysql": "^2.18.1",
+    "superagent": "^6.1.0",
+    "uuid": "^8.3.2"
+  }
+}
