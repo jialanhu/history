@@ -1,0 +1,31 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        file-extension: yaml
+        server-addr: 127.0.0.1:8848
+
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+      datasource:
+        ds:
+          nacos:
+            # nacos 链接地址
+            server-addr: 127.0.0.1:8848
+            # nacos 链接的分组
+            group-id: DEFAULT_GROUP
+            # 路由器规则
+            rule-type: flow
+            # nacos中的dataId
+            data-id: Order-Service-sentinel
+            #读取的配置文件类型
+            data-type: json
+
+  application:
+    name: Order-Service
+
+server:
+  port: 18091

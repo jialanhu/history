@@ -1,0 +1,27 @@
+server:
+  port: 80
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: baidu
+          uri: https://www.baidu.com/
+          filters:
+            - StripPrefix=1
+          predicates:
+            - Path=/baidu/**
+        - id: user
+          uri: lb://User-Service/
+          predicates:
+            - Path=/users/**
+        - id: user
+          uri: lb://Order-Service/
+          predicates:
+            - Path=/orders/**
+
+  application:
+    name: gateway

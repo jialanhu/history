@@ -3,8 +3,9 @@ node_modules
 */logs
 */config/*.js
 !*/config/*.example.js
-/.idea
-/.vscode
+.idea/
+.vscode/
+target/
 */apidoc
 */coverage/
 */.nyc_output/
