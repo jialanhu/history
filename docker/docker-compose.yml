@@ -74,5 +74,13 @@ services:
     environment:
       TZ: Asia/Shanghai
 
+  es:
+    image: elasticsearch:7.14.2
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: -Xms512m -Xmx512m # 限制使用内存,初始会直接使用16G以上内存
 
  
