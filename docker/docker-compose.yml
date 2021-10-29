@@ -65,5 +65,14 @@ services:
       - D:/code/jenkins:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
 
+  rabbitmq:
+    image: rabbitmq:management # 此版本才带有管理界面
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # mq本身
+      - "15672:15672" # 管理界面
+    environment:
+      TZ: Asia/Shanghai
+
 
  
