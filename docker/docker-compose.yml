@@ -20,14 +20,14 @@ services:
       TZ: Asia/Shanghai
     volumes:
       - ./redis/data:/data
-      - ./redis/conf/redis.conf:/etc/redis/redis.conf
-    command: redis-server /etc/redis/redis.conf
+    # 设置登录密码
+    command: redis-server --requirepass 123456
 
   mysql:
     image: mysql:latest
     container_name: mysql
     ports:
-      - 3306:3306
+      - "3306:3306"
     environment:
       # root 用户的密码
       MYSQL_ROOT_PASSWORD: secret
@@ -36,10 +36,9 @@ services:
       MYSQL_PASSWORD: secret
       TZ: Asia/Shanghai
     volumes:
-      # 慢sql日志
-      - ./mysql/log:/mysql/data
-      - /var/lib/mysql
-      - ./mysql/config.cnf:/etc/mysql/conf.d/config.cnf
+      - ./mysql:/var/lib/mysql
+    # 无法使用caching_sha2_password进行连接时
+    command: --default-authentication-plugin=mysql_native_password
 
   nginx:
     image: nginx
@@ -58,11 +57,11 @@ services:
     image: jenkinsci/blueocean
     container_name: jenkins
     ports:
-      - 8080:8080
-      - 50000:50000
+      - "8080:8080"
+      - "50000:50000"
     user: root
     volumes:
-      - D:/code/jenkins:/var/jenkins_home
+      - /code/jenkins:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
 
 
