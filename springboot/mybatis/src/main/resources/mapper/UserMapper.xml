@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mybatis.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.example.mybatis.entity.User">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+    </resultMap>
+
+    <sql id="tableName">t_user</sql>
+
+    <sql id="userColumns">id, name</sql>
+
+    <sql id="userColumnsWhere">
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="name != null">
+                AND name = #{name}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 使用where标签 条件成立时，添加 where 和排除后续 and/or 关键字 -->
+    <select id="find" parameterType="com.example.mybatis.entity.User" resultMap="BaseResultMap">
+        SELECT
+            <include refid="userColumns"/>
+        FROM <include refid="tableName"/>
+        <include refid="userColumnsWhere"></include>
+    </select>
+
+    <!-- 使用set标签 剔除追加到条件末尾的任何不相关的逗号 -->
+    <update id="updateById" parameterType="com.example.mybatis.entity.User">
+        UPDATE <include refid="tableName"/>
+        <set>
+            <if test="name != null">name=#{name}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <insert id="insert" parameterType="com.example.mybatis.entity.User">
+        INSERT INTO t_user (name) VALUES (#{name})
+    </insert>
+
+    <delete id="delete" parameterType="com.example.mybatis.entity.User">
+        DELETE FROM <include refid="tableName"/>
+        <include refid="userColumnsWhere"></include>
+    </delete>
+
+</mapper>

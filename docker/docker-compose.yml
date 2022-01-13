@@ -64,5 +64,22 @@ services:
       - /code/jenkins:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
 
+  rabbitmq:
+    image: rabbitmq:management # 此版本才带有管理界面
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # mq本身
+      - "15672:15672" # 管理界面
+    environment:
+      TZ: Asia/Shanghai
+
+  es:
+    image: elasticsearch:7.14.2
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: -Xms512m -Xmx512m # 限制使用内存,初始会直接使用16G以上内存
 
  
