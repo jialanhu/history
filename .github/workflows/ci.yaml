@@ -9,9 +9,13 @@ jobs:
 
   is-push-to-main-branch:
     runs-on: ubuntu-latest
-    if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+    if: |
+    ${{ 
+      (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') 
+      }}
     steps:
       - env:
           GITHUB_ACTION_REF: ${{ github.ref }}
           GITHUB_EVENT: ${{ github.event_name }}
-        run: echo "ref=${GITHUB_ACTION_REF}, event=${GITHUB_EVENT}";
+        run: echo "ref=${GITHUB_ACTION_REF}, event=${GITHUB_EVENT}, orgref=${github.ref}";
