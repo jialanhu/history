@@ -1,0 +1,17 @@
+name: ci
+
+# https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
+on:
+  - push
+  - pull_request
+  - workflow_dispatch
+jobs:
+
+  is-push-to-main-branch:
+    runs-on: ubuntu-latest
+    if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+    steps:
+      - env:
+          GITHUB_ACTION_REF: ${{ github.ref }}
+          GITHUB_EVENT: ${{ github.event_name }}
+        run: echo "ref=${GITHUB_ACTION_REF}, event=${GITHUB_EVENT}";
