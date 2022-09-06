@@ -6,6 +6,6 @@ node_modules
 .idea/
 .vscode/
 target/
-*/apidoc
-*/coverage/
-*/.nyc_output/
+**/apidoc
+**/coverage/
+**/.nyc_output/
