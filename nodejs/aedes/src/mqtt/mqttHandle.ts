@@ -1,4 +1,8 @@
 import { MqttError, MqttErrorDefines } from "./mqttError";
+import { Client } from "aedes:client";
+import * as buffer from "buffer";
+import * as Buffer from "buffer";
+import { ConnectPacket } from "packet";
 
 /**
  * 收到连接包时触发
@@ -8,18 +12,20 @@ import { MqttError, MqttErrorDefines } from "./mqttError";
  *   IP黑白名单
  * 错误触发 connectionError 事件
  */
-export const mqttPreConnect = callbackify((client, packet) => {
-  const ip = client.conn.remoteAddress;
-  if (!ip.includes("192.168")) {
-    throw new MqttError(MqttErrorDefines.IP_BLACKLIST, ip);
+export const mqttPreConnect = callbackify(
+  (client: Client & { conn: { remoteAddress: string } }, packet: ConnectPacket) => {
+    const ip = client.conn.remoteAddress;
+    if (!ip.includes("192.168")) {
+      throw new MqttError(MqttErrorDefines.IP_BLACKLIST, ip);
+    }
+    return true;
   }
-  return true;
-});
+);
 
 /**
  * 错误触发 clientError 事件
  */
-export const mqttAuthenticate = callbackify((client, username, password) => {
+export const mqttAuthenticate = callbackify((client: Client, username: string, password: Buffer) => {
   if (username !== "root" || password.toString("ascii") !== "root") {
     throw new MqttError(MqttErrorDefines.BAD_USERNAME_OR_PASSWORD, username, password);
   }

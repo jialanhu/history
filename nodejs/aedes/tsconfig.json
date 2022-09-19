@@ -10,7 +10,7 @@
     "outDir": "./out",
     "incremental": true,
     "skipLibCheck": true,
-    "types": ["node"]
+    "types": ["node", "aedes"]
   },
   "exclude": ["out", "node_modules"]
 }
