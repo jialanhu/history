@@ -11,6 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "aedes": "^0.48.0",
+    "aedes-persistence-redis": "^9.0.1",
+    "debug": "^4.3.4",
+    "mqemitter-redis": "^5.0.0",
     "prettier": "^2.7.1",
     "typescript": "^4.8.3"
   },
