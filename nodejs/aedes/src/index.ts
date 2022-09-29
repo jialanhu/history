@@ -15,7 +15,7 @@ const aedes = require("aedes")({
     ...redisConfig,
     maxSessionDelivery: 100, // maximum offline messages deliverable on client CONNECT, default is 1000
     packetTTL: function (packet) { // offline message TTL, default is disabled
-      return 10 //seconds
+      return 3600 //seconds
     }
   })
 });
