@@ -75,11 +75,20 @@ services:
 
   es:
     image: elasticsearch:7.14.2
+    container_name: es
     ports:
       - "9200:9200"
       - "9300:9300"
     environment:
       discovery.type: single-node
       ES_JAVA_OPTS: -Xms512m -Xmx512m # 限制使用内存,初始会直接使用16G以上内存
-
+  
+  postgres:
+    image:  postgres:latest
+    container_name: post
+    ports: 
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_INITDB_ARGS: --auth=md5 # 使用不支持 scram-sha-256 登录时设置
  
