@@ -1,0 +1,7 @@
+mysql:
+  username: root
+  password: secret
+  port: 3306
+  host: localhost
+  db: test
+  charset: utf8mb4
