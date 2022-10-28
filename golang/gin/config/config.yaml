@@ -1,0 +1,11 @@
+mysql:
+  username: root
+  password: secret
+  port: 3306
+  host: localhost
+  db: test
+  charset: utf8mb4
+  maxidleconns: 10    # 空闲连接池中的最大数
+  maxopenconns: 100   # 数据库连接的最大数
+http:
+  port: 8080
