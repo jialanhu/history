@@ -2,6 +2,9 @@ package config
 
 import (
 	"io/ioutil"
+	"log"
+	"path/filepath"
+	"runtime"
 
 	"gopkg.in/yaml.v3"
 )
@@ -30,8 +33,11 @@ type (
 
 var cfg Config
 
-func LoadConfig() {
-	yFile, err := ioutil.ReadFile("./config/config.yaml")
+func init() {
+	_, currentFile, _, _ := runtime.Caller(0)
+	path := filepath.Join(filepath.Dir(currentFile), "./config.yaml")
+	log.Println(path)
+	yFile, err := ioutil.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
