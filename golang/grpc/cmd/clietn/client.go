@@ -8,8 +8,10 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/encoding/gzip"
+	"google.golang.org/grpc/status"
 )
 
 var (
@@ -47,4 +49,17 @@ func main() {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting again: %s", r.GetMessage())
+
+	onceCallHelloDeadline(c, 2990, "one", codes.DeadlineExceeded)
+	onceCallHelloDeadline(c, 3000, "two", codes.DeadlineExceeded)
+	onceCallHelloDeadline(c, 3001, "three", codes.OK)
+}
+
+func onceCallHelloDeadline(c helloworld.GreeterClient, timeout uint16, name string, want codes.Code) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Millisecond)
+	defer cancel()
+
+	_, err := c.HelloDeadline(ctx, &helloworld.HelloRequest{Name: name})
+	got := status.Code(err)
+	log.Printf("[%v] wanted = %v, got = %v\n", name, want, got)
 }

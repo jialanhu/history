@@ -18,8 +18,8 @@ func main() {
 	select {
 
 	case sign := <-interrupt:
-		log.Printf("app - Run - signal: " + sign.String())
+		log.Printf("server - main - signal: " + sign.String())
 	case err := <-s.Notify():
-		log.Fatalf("app - Run - grpcServer.Notify: %w", err)
+		log.Fatalf("server - main - grpcServer.Notify: %v", err)
 	}
 }
