@@ -1,14 +1,17 @@
 package grpcclient
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
+	"grpc/data"
 	"grpc/proto/helloworld"
 	"log"
+	"os"
 	"sync"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/encoding/gzip"
+	"google.golang.org/grpc/credentials"
 )
 
 var (
@@ -23,10 +26,30 @@ type Client struct {
 
 func New() *Client {
 	flag.Parse()
+	cert, err := tls.LoadX509KeyPair(data.Path("x509/client_cert.pem"), data.Path("x509/client_key.pem"))
+	if err != nil {
+		log.Fatalf("failed to load client cert: %v", err)
+	}
+
+	ca := x509.NewCertPool()
+	caFilePath := data.Path("x509/ca_cert.pem")
+	caBytes, err := os.ReadFile(caFilePath)
+	if err != nil {
+		log.Fatalf("failed to read ca cert %q: %v", caFilePath, err)
+	}
+	if ok := ca.AppendCertsFromPEM(caBytes); !ok {
+		log.Fatalf("failed to parse %q", caFilePath)
+	}
+
+	tlsConfig := &tls.Config{
+		ServerName:   "localhost",
+		Certificates: []tls.Certificate{cert},
+		RootCAs:      ca,
+	}
 	conn, err := grpc.Dial(
 		*addr,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithDefaultCallOptions(grpc.UseCompressor(gzip.Name)), // 对客户端发送的所有rpc请求使用压缩
+		grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)),
+		// grpc.WithDefaultCallOptions(grpc.UseCompressor(gzip.Name)), // 对客户端发送的所有rpc请求使用压缩
 	)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)

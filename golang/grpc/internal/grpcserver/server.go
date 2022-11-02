@@ -1,13 +1,17 @@
 package grpcserver
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"fmt"
+	"grpc/data"
 	"log"
 	"net"
 	"os"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	_ "google.golang.org/grpc/encoding/gzip" // Install the gzip compressor
 )
 
@@ -27,8 +31,29 @@ func New() *Server {
 	if grpcLogSeverityLevel == "info" && grpcLogVerbosityLevel == "99" {
 		log.Println("Grpc Debugging is Started")
 	}
-	flag.Parse()
-	RpcServer = grpc.NewServer()
+
+	// 使用mTSL
+	cert, err := tls.LoadX509KeyPair(data.Path("x509/server_cert.pem"), data.Path("x509/server_key.pem"))
+	if err != nil {
+		log.Fatalf("failed to load key pair: %s", err)
+	}
+	ca := x509.NewCertPool()
+	// 需要使用客户端 CA 证书验证
+	caFilePath := data.Path("x509/client_ca_cert.pem")
+	caBytes, err := os.ReadFile(caFilePath)
+	if err != nil {
+		log.Fatalf("failed to read ca cert %q: %v", caFilePath, err)
+	}
+	if ok := ca.AppendCertsFromPEM(caBytes); !ok {
+		log.Fatalf("failed to parse %q", caFilePath)
+	}
+	tlsConfig := &tls.Config{
+		ClientAuth:   tls.RequireAndVerifyClientCert,
+		Certificates: []tls.Certificate{cert},
+		ClientCAs:    ca,
+	}
+	RpcServer = grpc.NewServer(grpc.Creds(credentials.NewTLS(tlsConfig)))
+	//RpcServer = grpc.NewServer()
 	s := &Server{
 		server: RpcServer,
 		notify: make(chan error, 1),
@@ -39,6 +64,7 @@ func New() *Server {
 
 func (s *Server) start() {
 	defer close(s.notify)
+	flag.Parse()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
