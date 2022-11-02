@@ -5,6 +5,7 @@ import (
 	"flag"
 	"grpc/proto/helloworld"
 	"log"
+	"sync"
 	"time"
 
 	"google.golang.org/grpc"
@@ -19,6 +20,11 @@ var (
 	name = flag.String("name", "world", "name to greet")
 )
 
+type Client struct {
+	client helloworld.GreeterClient
+	wg     sync.WaitGroup
+}
+
 func main() {
 	flag.Parse()
 
@@ -31,17 +37,37 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := helloworld.NewGreeterClient(conn)
+	greeterClient := helloworld.NewGreeterClient(conn)
+	c := &Client{client: greeterClient}
 
+	go c.callSayHello()
+	go c.callSayHelloAgain()
+
+	go c.onceCallHelloDeadline(2990, "one", codes.DeadlineExceeded)
+	go c.onceCallHelloDeadline(3000, "two", codes.DeadlineExceeded)
+	go c.onceCallHelloDeadline(3001, "three", codes.OK)
+
+	c.wg.Wait()
+}
+
+func (c *Client) callSayHello() {
+	c.wg.Add(1)
+	defer c.wg.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.SayHello(ctx, &helloworld.HelloRequest{Name: *name})
+	r, err := c.client.SayHello(ctx, &helloworld.HelloRequest{Name: *name})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting: %s", r.GetMessage())
+}
 
-	r, err = c.SayHelloAgain(
+func (c *Client) callSayHelloAgain() {
+	c.wg.Add(1)
+	defer c.wg.Done()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.client.SayHelloAgain(
 		ctx, &helloworld.HelloRequest{Name: *name},
 		// grpc.UseCompressor(gzip.Name), // 单个请求使用压缩
 	)
@@ -49,17 +75,15 @@ func main() {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting again: %s", r.GetMessage())
-
-	onceCallHelloDeadline(c, 2990, "one", codes.DeadlineExceeded)
-	onceCallHelloDeadline(c, 3000, "two", codes.DeadlineExceeded)
-	onceCallHelloDeadline(c, 3001, "three", codes.OK)
 }
 
-func onceCallHelloDeadline(c helloworld.GreeterClient, timeout uint16, name string, want codes.Code) {
+func (c *Client) onceCallHelloDeadline(timeout uint16, name string, want codes.Code) {
+	c.wg.Add(1)
+	defer c.wg.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Millisecond)
 	defer cancel()
 
-	_, err := c.HelloDeadline(ctx, &helloworld.HelloRequest{Name: name})
+	_, err := c.client.HelloDeadline(ctx, &helloworld.HelloRequest{Name: name})
 	got := status.Code(err)
 	log.Printf("[%v] wanted = %v, got = %v\n", name, want, got)
 }
