@@ -7,6 +7,7 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
+	_ "google.golang.org/grpc/encoding/gzip" // Install the gzip compressor
 )
 
 var (

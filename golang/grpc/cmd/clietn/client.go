@@ -9,6 +9,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/encoding/gzip"
 )
 
 var (
@@ -19,7 +20,11 @@ var (
 func main() {
 	flag.Parse()
 
-	conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(
+		*addr,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultCallOptions(grpc.UseCompressor(gzip.Name)), // 对客户端发送的所有rpc请求使用压缩
+	)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -34,7 +39,10 @@ func main() {
 	}
 	log.Printf("Greeting: %s", r.GetMessage())
 
-	r, err = c.SayHelloAgain(ctx, &helloworld.HelloRequest{Name: *name})
+	r, err = c.SayHelloAgain(
+		ctx, &helloworld.HelloRequest{Name: *name},
+		// grpc.UseCompressor(gzip.Name), // 单个请求使用压缩
+	)
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
