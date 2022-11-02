@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 
 	"google.golang.org/grpc"
 	_ "google.golang.org/grpc/encoding/gzip" // Install the gzip compressor
@@ -21,6 +22,11 @@ type Server struct {
 }
 
 func New() *Server {
+	grpcLogVerbosityLevel := os.Getenv("GRPC_GO_LOG_VERBOSITY_LEVEL")
+	grpcLogSeverityLevel := os.Getenv("GRPC_GO_LOG_SEVERITY_LEVEL")
+	if grpcLogSeverityLevel == "info" && grpcLogVerbosityLevel == "99" {
+		log.Println("Grpc Debugging is Started")
+	}
 	flag.Parse()
 	RpcServer = grpc.NewServer()
 	s := &Server{
