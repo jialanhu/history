@@ -1,9 +1,6 @@
 syntax = "proto3";
 
 option go_package = "grpc/proto/helloworld/helloworld";
-option java_multiple_files = true;
-option java_package = "io.grpc.examples.helloworld";
-option java_outer_classname = "HelloWorldProto";
 
 package helloworld;
 
@@ -14,7 +11,9 @@ service Greeter {
 
   rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
 
-  rpc HelloDeadline (HelloRequest) returns (Empty) {}
+  rpc HelloDeadline (Empty) returns (Empty) {}
+
+  rpc HelloError (HelloRequest) returns (Empty) {}
 }
 
 // The request message containing the user's name.

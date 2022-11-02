@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option go_package = "grpc/proto/errdetail/errdetail";
+
+package errdetail;
+
+message BadRequest_FieldViolation {
+  string Field = 1;
+  string Description = 2;
+}
+
+message BadRequest {
+  repeated BadRequest_FieldViolation FieldViolations = 1;
+}

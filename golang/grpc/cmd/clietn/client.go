@@ -22,5 +22,6 @@ func main() {
 	go c.CallHelloDeadline(3000, "two", codes.DeadlineExceeded)
 	go c.CallHelloDeadline(3001, "three", codes.OK)
 
+	go c.CallHelloError(*name)
 	c.Wait()
 }
