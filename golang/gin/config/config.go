@@ -1,8 +1,8 @@
 package config
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"runtime"
 
@@ -37,7 +37,7 @@ func init() {
 	_, currentFile, _, _ := runtime.Caller(0)
 	path := filepath.Join(filepath.Dir(currentFile), "./config.yaml")
 	log.Println(path)
-	yFile, err := ioutil.ReadFile(path)
+	yFile, err := os.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
