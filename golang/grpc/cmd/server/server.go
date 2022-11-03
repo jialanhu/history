@@ -16,7 +16,6 @@ func main() {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 	select {
-
 	case sign := <-interrupt:
 		log.Printf("server - main - signal: " + sign.String())
 	case err := <-s.Notify():

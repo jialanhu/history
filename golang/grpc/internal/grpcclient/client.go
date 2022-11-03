@@ -49,6 +49,8 @@ func New() *Client {
 	conn, err := grpc.Dial(
 		*addr,
 		grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)),
+		grpc.WithUnaryInterceptor(unaryInterceptor),   // 客户端一元拦截器
+		grpc.WithStreamInterceptor(streamInterceptor), // 客户端流式拦截器
 		// grpc.WithDefaultCallOptions(grpc.UseCompressor(gzip.Name)), // 对客户端发送的所有rpc请求使用压缩
 	)
 	if err != nil {
@@ -59,7 +61,8 @@ func New() *Client {
 	return c
 }
 
-func (c *Client) Wait() {
+func (c *Client) Wait(n int) {
+	c.wg.Add(n)
 	defer c.conn.Close()
 	c.wg.Wait()
 }

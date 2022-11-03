@@ -2,9 +2,11 @@ package controller
 
 import (
 	"context"
+	"fmt"
 	"grpc/internal/grpcserver"
 	"grpc/proto/errdetail"
 	"grpc/proto/helloworld"
+	"io"
 	"log"
 	"time"
 
@@ -51,4 +53,19 @@ func (s *server) HelloError(ctx context.Context, in *helloworld.HelloRequest) (*
 		return nil, st.Err()
 	}
 	return &helloworld.Empty{}, nil
+}
+
+func (s *server) HelloStream(stream helloworld.Greeter_HelloStreamServer) error {
+	for {
+		in, err := stream.Recv()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			fmt.Printf("HelloStream server: error receiving from stream: %v\n", err)
+			return err
+		}
+		fmt.Printf("HelloStream bidi echoing message %q\n", in.Name)
+		stream.Send(&helloworld.HelloReply{Message: in.Name})
+	}
 }

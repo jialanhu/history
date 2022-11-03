@@ -2,8 +2,10 @@ package grpcclient
 
 import (
 	"context"
+	"fmt"
 	_ "grpc/proto/errdetail" // install proto
 	"grpc/proto/helloworld"
+	"io"
 	"log"
 	"time"
 
@@ -12,7 +14,6 @@ import (
 )
 
 func (c *Client) CallSayHello(name string) {
-	c.wg.Add(1)
 	defer c.wg.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -24,7 +25,6 @@ func (c *Client) CallSayHello(name string) {
 }
 
 func (c *Client) CallSayHelloAgain(name string) {
-	c.wg.Add(1)
 	defer c.wg.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -39,7 +39,6 @@ func (c *Client) CallSayHelloAgain(name string) {
 }
 
 func (c *Client) CallHelloDeadline(timeout uint16, name string, want codes.Code) {
-	c.wg.Add(1)
 	defer c.wg.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Millisecond)
 	defer cancel()
@@ -49,7 +48,6 @@ func (c *Client) CallHelloDeadline(timeout uint16, name string, want codes.Code)
 }
 
 func (c *Client) CallHelloError(name string) {
-	c.wg.Add(1)
 	defer c.wg.Done()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -60,5 +58,36 @@ func (c *Client) CallHelloError(name string) {
 		for _, d := range e.Details() {
 			log.Printf("error detail d: %s", d)
 		}
+	}
+}
+
+func (c *Client) CallHelloStream(name string) {
+	defer c.wg.Done()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	s, err := c.client.HelloStream(ctx)
+	if err != nil {
+		log.Printf("hello stream error %s", err)
+	}
+	go func() {
+		for i := 0; i < 100; i++ {
+			time.Sleep(time.Duration(100) * time.Millisecond)
+			if err := s.Send(&helloworld.HelloRequest{Name: fmt.Sprintf("Request name: %v count: %d", name, i+1)}); err != nil {
+				log.Fatalf("failed to send request due to error: %v", err)
+			}
+		}
+		s.CloseSend()
+	}()
+
+	for {
+		resp, err := s.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("failed to receive response due to error: %v", err)
+		}
+		log.Println("resp message: ", resp.Message)
 	}
 }

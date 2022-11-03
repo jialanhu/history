@@ -23,5 +23,7 @@ func main() {
 	go c.CallHelloDeadline(3001, "three", codes.OK)
 
 	go c.CallHelloError(*name)
-	c.Wait()
+
+	go c.CallHelloStream(*name)
+	c.Wait(7)
 }

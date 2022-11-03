@@ -52,7 +52,11 @@ func New() *Server {
 		Certificates: []tls.Certificate{cert},
 		ClientCAs:    ca,
 	}
-	RpcServer = grpc.NewServer(grpc.Creds(credentials.NewTLS(tlsConfig)))
+	RpcServer = grpc.NewServer(
+		grpc.Creds(credentials.NewTLS(tlsConfig)),
+		grpc.UnaryInterceptor(unaryInterceptor),   // 一元拦截器
+		grpc.StreamInterceptor(streamInterceptor), // 流式拦截器
+	)
 	//RpcServer = grpc.NewServer()
 	s := &Server{
 		server: RpcServer,
