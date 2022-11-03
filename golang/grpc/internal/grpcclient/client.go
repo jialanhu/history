@@ -9,14 +9,22 @@ import (
 	"log"
 	"os"
 	"sync"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/keepalive"
 )
 
 var (
 	addr = flag.String("addr", "localhost:50051", "the address to connect to")
 )
+
+var kacp = keepalive.ClientParameters{
+	Time:                10 * time.Second, // 默认无穷  如果没有活动时发送ping的间隔
+	Timeout:             time.Second,      // 默认20秒  等待ping ack包的超时时间
+	PermitWithoutStream: true,             // 默认false 是否允许在没有活动的RPC流时发送 ping
+}
 
 type Client struct {
 	client helloworld.GreeterClient
@@ -49,6 +57,7 @@ func New() *Client {
 	conn, err := grpc.Dial(
 		*addr,
 		grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)),
+		grpc.WithKeepaliveParams(kacp),
 		grpc.WithUnaryInterceptor(unaryInterceptor),   // 客户端一元拦截器
 		grpc.WithStreamInterceptor(streamInterceptor), // 客户端流式拦截器
 		// grpc.WithDefaultCallOptions(grpc.UseCompressor(gzip.Name)), // 对客户端发送的所有rpc请求使用压缩

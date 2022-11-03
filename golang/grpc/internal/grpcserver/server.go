@@ -9,16 +9,31 @@ import (
 	"log"
 	"net"
 	"os"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	_ "google.golang.org/grpc/encoding/gzip" // Install the gzip compressor
+	"google.golang.org/grpc/keepalive"
 )
 
 var (
 	port      = flag.Int("port", 50051, "The server port")
 	RpcServer *grpc.Server
 )
+
+var kaep = keepalive.EnforcementPolicy{
+	MinTime:             5 * time.Second, // 默认5分钟 ping允许的最短间隔时间, 若低于此间隔则结束此连接
+	PermitWithoutStream: true,            // 默认false 是否允许在没有活动的RPC流时发送 ping
+}
+
+var kasp = keepalive.ServerParameters{
+	MaxConnectionIdle:     15 * time.Second, // 默认无穷  任何客户端空闲时间超过此值, 则发送超时
+	MaxConnectionAge:      30 * time.Second, // 默认无穷  任何活动连接超过此时间, 则发送超时
+	MaxConnectionAgeGrace: 5 * time.Second,  // 默认无穷  是 MaxConnectionAge 的一个附加周期, 此事件之后连接将被关闭
+	Time:                  5 * time.Second,  // 默认2小时 客户端空闲时间超过此值, 则ping客户端, 以确保连接时活动的
+	Timeout:               1 * time.Second,  // 默认20秒  等待ping ack包的超时时间
+}
 
 type Server struct {
 	server *grpc.Server
@@ -54,6 +69,8 @@ func New() *Server {
 	}
 	RpcServer = grpc.NewServer(
 		grpc.Creds(credentials.NewTLS(tlsConfig)),
+		grpc.KeepaliveEnforcementPolicy(kaep),
+		grpc.KeepaliveParams(kasp),
 		grpc.UnaryInterceptor(unaryInterceptor),   // 一元拦截器
 		grpc.StreamInterceptor(streamInterceptor), // 流式拦截器
 	)
