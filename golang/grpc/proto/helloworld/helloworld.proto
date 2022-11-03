@@ -16,6 +16,8 @@ service Greeter {
   rpc HelloError (HelloRequest) returns (Empty) {}
 
   rpc HelloStream (stream HelloRequest) returns (stream HelloReply) {}
+
+  rpc HelloBalancing (Empty) returns (HelloReply) {}
 }
 
 // The request message containing the user's name.

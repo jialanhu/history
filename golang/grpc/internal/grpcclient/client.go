@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"flag"
+	"fmt"
 	"grpc/data"
 	"grpc/proto/helloworld"
 	"log"
@@ -17,7 +18,8 @@ import (
 )
 
 var (
-	addr = flag.String("addr", "localhost:50051", "the address to connect to")
+	// addr  = flag.String("addr", "localhost:50051", "the address to connect to")
+	addrs = []string{"localhost:50051", "localhost:50052", "localhost:50053"}
 )
 
 var kacp = keepalive.ClientParameters{
@@ -55,12 +57,14 @@ func New() *Client {
 		RootCAs:      ca,
 	}
 	conn, err := grpc.Dial(
-		*addr,
+		//*addr,
+		fmt.Sprintf("%s:///%s", helloScheme, helloServiceName),
 		grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)),
 		grpc.WithKeepaliveParams(kacp),
 		grpc.WithUnaryInterceptor(unaryInterceptor),   // 客户端一元拦截器
 		grpc.WithStreamInterceptor(streamInterceptor), // 客户端流式拦截器
 		// grpc.WithDefaultCallOptions(grpc.UseCompressor(gzip.Name)), // 对客户端发送的所有rpc请求使用压缩
+		grpc.WithDefaultServiceConfig(`{"loadBalancingConfig": [{"round_robin":{}}]}`), // 初始化均衡器策略
 	)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -74,4 +78,8 @@ func (c *Client) Wait(n int) {
 	c.wg.Add(n)
 	defer c.conn.Close()
 	c.wg.Wait()
+}
+
+func (c *Client) Add(n int) {
+	c.wg.Add(n)
 }

@@ -20,6 +20,7 @@ import (
 var (
 	port      = flag.Int("port", 50051, "The server port")
 	RpcServer *grpc.Server
+	Addr      string
 )
 
 var kaep = keepalive.EnforcementPolicy{
@@ -41,6 +42,7 @@ type Server struct {
 }
 
 func New() *Server {
+	flag.Parse()
 	grpcLogVerbosityLevel := os.Getenv("GRPC_GO_LOG_VERBOSITY_LEVEL")
 	grpcLogSeverityLevel := os.Getenv("GRPC_GO_LOG_SEVERITY_LEVEL")
 	if grpcLogSeverityLevel == "info" && grpcLogVerbosityLevel == "99" {
@@ -75,6 +77,7 @@ func New() *Server {
 		grpc.StreamInterceptor(streamInterceptor), // 流式拦截器
 	)
 	//RpcServer = grpc.NewServer()
+	Addr = fmt.Sprintf("localhost:%v", *port)
 	s := &Server{
 		server: RpcServer,
 		notify: make(chan error, 1),
@@ -85,10 +88,11 @@ func New() *Server {
 
 func (s *Server) start() {
 	defer close(s.notify)
-	flag.Parse()
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
+	lis, err := net.Listen("tcp", Addr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
+	} else {
+		log.Printf("listen: %v", Addr)
 	}
 	s.notify <- s.server.Serve(lis)
 }

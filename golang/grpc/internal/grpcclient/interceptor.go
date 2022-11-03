@@ -19,7 +19,7 @@ func unaryInterceptor(ctx context.Context, method string, req, reply interface{}
 	start := time.Now()
 	err := invoker(ctx, method, req, reply, cc, opts...)
 	end := time.Now()
-	log.Printf("RPC: %s, start time: %s, end time: %s, err: %v", method, start.Format("Basic"), end.Format(time.RFC3339), err)
+	log.Printf("RPC: %s, cost: %s, err: %v", method, end.Sub(start), err)
 	return err
 }
 

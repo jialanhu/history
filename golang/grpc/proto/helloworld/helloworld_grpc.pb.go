@@ -28,6 +28,7 @@ type GreeterClient interface {
 	HelloDeadline(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 	HelloError(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*Empty, error)
 	HelloStream(ctx context.Context, opts ...grpc.CallOption) (Greeter_HelloStreamClient, error)
+	HelloBalancing(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*HelloReply, error)
 }
 
 type greeterClient struct {
@@ -105,6 +106,15 @@ func (x *greeterHelloStreamClient) Recv() (*HelloReply, error) {
 	return m, nil
 }
 
+func (c *greeterClient) HelloBalancing(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*HelloReply, error) {
+	out := new(HelloReply)
+	err := c.cc.Invoke(ctx, "/helloworld.Greeter/HelloBalancing", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GreeterServer is the server API for Greeter service.
 // All implementations must embed UnimplementedGreeterServer
 // for forward compatibility
@@ -115,6 +125,7 @@ type GreeterServer interface {
 	HelloDeadline(context.Context, *Empty) (*Empty, error)
 	HelloError(context.Context, *HelloRequest) (*Empty, error)
 	HelloStream(Greeter_HelloStreamServer) error
+	HelloBalancing(context.Context, *Empty) (*HelloReply, error)
 	mustEmbedUnimplementedGreeterServer()
 }
 
@@ -136,6 +147,9 @@ func (UnimplementedGreeterServer) HelloError(context.Context, *HelloRequest) (*E
 }
 func (UnimplementedGreeterServer) HelloStream(Greeter_HelloStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method HelloStream not implemented")
+}
+func (UnimplementedGreeterServer) HelloBalancing(context.Context, *Empty) (*HelloReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HelloBalancing not implemented")
 }
 func (UnimplementedGreeterServer) mustEmbedUnimplementedGreeterServer() {}
 
@@ -248,6 +262,24 @@ func (x *greeterHelloStreamServer) Recv() (*HelloRequest, error) {
 	return m, nil
 }
 
+func _Greeter_HelloBalancing_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).HelloBalancing(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/helloworld.Greeter/HelloBalancing",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).HelloBalancing(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Greeter_ServiceDesc is the grpc.ServiceDesc for Greeter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -270,6 +302,10 @@ var Greeter_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "HelloError",
 			Handler:    _Greeter_HelloError_Handler,
+		},
+		{
+			MethodName: "HelloBalancing",
+			Handler:    _Greeter_HelloBalancing_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

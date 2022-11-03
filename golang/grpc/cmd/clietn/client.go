@@ -3,8 +3,7 @@ package main
 import (
 	"flag"
 	"grpc/internal/grpcclient"
-
-	"google.golang.org/grpc/codes"
+	"time"
 )
 
 var (
@@ -14,16 +13,21 @@ var (
 func main() {
 	flag.Parse()
 	c := grpcclient.New()
+	time.Sleep(time.Second) // 用于让 balancing 多个连接都连上
 
-	go c.CallSayHello(*name)
-	go c.CallSayHelloAgain(*name)
+	// go c.CallSayHello(*name)
+	// go c.CallSayHelloAgain(*name)
 
-	go c.CallHelloDeadline(2990, "one", codes.DeadlineExceeded)
-	go c.CallHelloDeadline(3000, "two", codes.DeadlineExceeded)
-	go c.CallHelloDeadline(3001, "three", codes.OK)
+	// go c.CallHelloDeadline(2990, "one", codes.DeadlineExceeded)
+	// go c.CallHelloDeadline(3000, "two", codes.DeadlineExceeded)
+	// go c.CallHelloDeadline(3001, "three", codes.OK)
 
-	go c.CallHelloError(*name)
+	// go c.CallHelloError(*name)
 
-	go c.CallHelloStream(*name)
-	c.Wait(7)
+	// go c.CallHelloStream(*name)
+	c.Add(10)
+	for i := 0; i < 10; i++ {
+		c.CallHelloBalancing()
+	}
+	c.Wait(0)
 }

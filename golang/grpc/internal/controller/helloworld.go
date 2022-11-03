@@ -16,10 +16,11 @@ import (
 
 type server struct {
 	helloworld.UnimplementedGreeterServer
+	addr string
 }
 
 func Register() {
-	helloworld.RegisterGreeterServer(grpcserver.RpcServer, &server{})
+	helloworld.RegisterGreeterServer(grpcserver.RpcServer, &server{addr: grpcserver.Addr})
 }
 
 func (s *server) SayHello(ctx context.Context, in *helloworld.HelloRequest) (*helloworld.HelloReply, error) {
@@ -68,4 +69,8 @@ func (s *server) HelloStream(stream helloworld.Greeter_HelloStreamServer) error 
 		fmt.Printf("HelloStream bidi echoing message %q\n", in.Name)
 		stream.Send(&helloworld.HelloReply{Message: in.Name})
 	}
+}
+
+func (s *server) HelloBalancing(ctx context.Context, in *helloworld.Empty) (*helloworld.HelloReply, error) {
+	return &helloworld.HelloReply{Message: fmt.Sprintf("HelloBalancing (from %s)", s.addr)}, nil
 }

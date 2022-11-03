@@ -72,7 +72,7 @@ func (c *Client) CallHelloStream(name string) {
 	}
 	go func() {
 		for i := 0; i < 100; i++ {
-			time.Sleep(time.Duration(100) * time.Millisecond)
+			time.Sleep(time.Duration(10) * time.Millisecond)
 			if err := s.Send(&helloworld.HelloRequest{Name: fmt.Sprintf("Request name: %v count: %d", name, i+1)}); err != nil {
 				log.Fatalf("failed to send request due to error: %v", err)
 			}
@@ -90,4 +90,15 @@ func (c *Client) CallHelloStream(name string) {
 		}
 		log.Println("resp message: ", resp.Message)
 	}
+}
+
+func (c *Client) CallHelloBalancing() {
+	defer c.wg.Done()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	r, err := c.client.HelloBalancing(ctx, &helloworld.Empty{})
+	if err != nil {
+		log.Fatalf("balancing error: %v", err)
+	}
+	log.Printf("resp: %s", r.GetMessage())
 }
