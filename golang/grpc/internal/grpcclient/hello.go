@@ -14,7 +14,6 @@ import (
 )
 
 func (c *Client) CallSayHello(name string) {
-	defer c.wg.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.client.SayHello(ctx, &helloworld.HelloRequest{Name: name})
@@ -25,7 +24,6 @@ func (c *Client) CallSayHello(name string) {
 }
 
 func (c *Client) CallSayHelloAgain(name string) {
-	defer c.wg.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.client.SayHelloAgain(
@@ -39,7 +37,6 @@ func (c *Client) CallSayHelloAgain(name string) {
 }
 
 func (c *Client) CallHelloDeadline(timeout uint16, name string, want codes.Code) {
-	defer c.wg.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Millisecond)
 	defer cancel()
 	_, err := c.client.HelloDeadline(ctx, &helloworld.Empty{})
@@ -48,7 +45,6 @@ func (c *Client) CallHelloDeadline(timeout uint16, name string, want codes.Code)
 }
 
 func (c *Client) CallHelloError(name string) {
-	defer c.wg.Done()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	_, err := c.client.HelloError(ctx, &helloworld.HelloRequest{Name: name})
@@ -62,7 +58,6 @@ func (c *Client) CallHelloError(name string) {
 }
 
 func (c *Client) CallHelloStream(name string) {
-	defer c.wg.Done()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -93,7 +88,6 @@ func (c *Client) CallHelloStream(name string) {
 }
 
 func (c *Client) CallHelloBalancing() {
-	defer c.wg.Done()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	r, err := c.client.HelloBalancing(ctx, &helloworld.Empty{})
@@ -101,4 +95,14 @@ func (c *Client) CallHelloBalancing() {
 		log.Fatalf("balancing error: %v", err)
 	}
 	log.Printf("resp: %s", r.GetMessage())
+}
+
+func (c *Client) CallHelloRetry() {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	_, err := c.client.HelloRetry(ctx, &helloworld.Empty{})
+	if err != nil {
+		log.Fatalf("balancing error: %v", err)
+	}
+	log.Println("retry done")
 }

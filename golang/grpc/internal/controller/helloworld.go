@@ -8,6 +8,7 @@ import (
 	"grpc/proto/helloworld"
 	"io"
 	"log"
+	"math/rand"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -73,4 +74,14 @@ func (s *server) HelloStream(stream helloworld.Greeter_HelloStreamServer) error 
 
 func (s *server) HelloBalancing(ctx context.Context, in *helloworld.Empty) (*helloworld.HelloReply, error) {
 	return &helloworld.HelloReply{Message: fmt.Sprintf("HelloBalancing (from %s)", s.addr)}, nil
+}
+
+func (s *server) HelloRetry(ctx context.Context, in *helloworld.Empty) (*helloworld.Empty, error) {
+	rand.Seed(time.Now().UnixNano())
+	n := rand.Int31n(100)
+	log.Printf("HelloRetry n: %v", n)
+	if 40 < n {
+		return nil, status.Errorf(codes.Unavailable, "retry again")
+	}
+	return &helloworld.Empty{}, nil
 }

@@ -25,9 +25,10 @@ func main() {
 	// go c.CallHelloError(*name)
 
 	// go c.CallHelloStream(*name)
-	c.Add(10)
-	for i := 0; i < 10; i++ {
-		c.CallHelloBalancing()
-	}
-	c.Wait(0)
+	// for i := 0; i < 10; i++ {
+	// 	c.CallHelloBalancing()
+	// }
+
+	c.CallHelloRetry()
+	select {}
 }

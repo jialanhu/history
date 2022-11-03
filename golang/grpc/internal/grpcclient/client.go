@@ -18,8 +18,36 @@ import (
 )
 
 var (
-	// addr  = flag.String("addr", "localhost:50051", "the address to connect to")
+	addr  = flag.String("addr", "localhost:50051", "the address to connect to")
 	addrs = []string{"localhost:50051", "localhost:50052", "localhost:50053"}
+
+	/**
+		loadBalancingConfig 负载均衡配置
+
+		methodConfig.name [{service: 对应的prc服务}] proto文件中的service
+		retryPolicy 自动重试配置
+			MaxAttempts  			尝试请求次数 默认尝试为5, 最小为1
+			InitialBackoff 		初始退避延迟
+			MaxBackoff 				最大退避延迟
+			BackoffMultiplier	退避乘数
+				每次调用失败之后, 将会介于0和当前退避值之间随机延迟确定何时进行下一次重试
+				每次尝试之后，退避值将会乘以 BackoffMultiplier
+			RetryableStatusCodes	状态代码合计，具有匹配状态失败的gRPC调用将自动重试
+
+	**/
+	cfg = `{
+		"loadBalancingConfig": [{"round_robin":{}}],
+		"methodConfig": [{
+		  "name": [{"service": "helloworld.Greeter"}],
+		  "waitForReady": true,
+		  "retryPolicy": {
+			  "MaxAttempts": 4,
+			  "InitialBackoff": ".01s",
+			  "MaxBackoff": ".01s",
+			  "BackoffMultiplier": 1.0,
+			  "RetryableStatusCodes": [ "UNAVAILABLE" ]
+		  }
+		}]}`
 )
 
 var kacp = keepalive.ClientParameters{
@@ -64,7 +92,7 @@ func New() *Client {
 		grpc.WithUnaryInterceptor(unaryInterceptor),   // 客户端一元拦截器
 		grpc.WithStreamInterceptor(streamInterceptor), // 客户端流式拦截器
 		// grpc.WithDefaultCallOptions(grpc.UseCompressor(gzip.Name)), // 对客户端发送的所有rpc请求使用压缩
-		grpc.WithDefaultServiceConfig(`{"loadBalancingConfig": [{"round_robin":{}}]}`), // 初始化均衡器策略
+		grpc.WithDefaultServiceConfig(cfg),
 	)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
