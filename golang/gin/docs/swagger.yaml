@@ -2,20 +2,38 @@ basePath: /api/v1
 definitions:
   entities.User:
     properties:
-      create_at:
+      created_at:
         type: string
-      deleted:
-        type: boolean
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
       email:
         type: string
       id:
         type: integer
       name:
         type: string
-      update_at:
+      updated_at:
         type: string
     type: object
-  user.RegisterDto:
+  gin_internal_user.RegisterDto:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    required:
+    - email
+    - name
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  internal_user.RegisterDto:
     properties:
       email:
         type: string
@@ -58,7 +76,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/user.RegisterDto'
+          $ref: '#/definitions/gin_internal_user.RegisterDto'
       produces:
       - application/json
       responses:

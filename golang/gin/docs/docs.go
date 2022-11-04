@@ -40,7 +40,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.RegisterDto"
+                            "$ref": "#/definitions/gin_internal_user.RegisterDto"
                         }
                     }
                 ],
@@ -131,11 +131,11 @@ const docTemplate = `{
         "entities.User": {
             "type": "object",
             "properties": {
-                "create_at": {
+                "created_at": {
                     "type": "string"
                 },
-                "deleted": {
-                    "type": "boolean"
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
                 },
                 "email": {
                     "type": "string"
@@ -146,12 +146,39 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "update_at": {
+                "updated_at": {
                     "type": "string"
                 }
             }
         },
-        "user.RegisterDto": {
+        "gin_internal_user.RegisterDto": {
+            "type": "object",
+            "required": [
+                "email",
+                "name"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "internal_user.RegisterDto": {
             "type": "object",
             "required": [
                 "email",
