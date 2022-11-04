@@ -15,5 +15,5 @@ func Run() {
 
 	r := gin.Default()
 	controller.NewRouter(r)
-	r.Run(":" + fmt.Sprint(cfg.Http.Port))
+	r.Run("localhost:" + fmt.Sprint(cfg.Http.Port))
 }

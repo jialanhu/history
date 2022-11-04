@@ -1,0 +1,1 @@
+swag init -g ./internal/controller/router.go
