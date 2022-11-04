@@ -16,12 +16,7 @@ type (
 	}
 
 	Mysql struct {
-		Port         int
-		UserName     string
-		Password     string
-		Host         string
-		DB           string
-		Charset      string
+		DSN          string
 		MaxIdleConns int
 		MaxOpenConns int
 	}
@@ -45,6 +40,11 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	MYSQL_DSN := os.Getenv("MYSQL_DSN")
+	if MYSQL_DSN == "" {
+		panic("env MYSQL_DSN is nil")
+	}
+	cfg.Mysql.DSN = MYSQL_DSN
 }
 
 func GetConfig() Config {
