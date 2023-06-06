@@ -32,7 +32,7 @@ services:
 
    ### broker配置
    # 定义外网访问地址（宿主机ip地址和端口）
-    - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.1.123:9192
+    - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://172.28.52.120:9192
    # broker.id，必须唯一
     - KAFKA_BROKER_ID=1
    volumes:
@@ -55,7 +55,7 @@ services:
     - ALLOW_PLAINTEXT_LISTENER=yes
     - KAFKA_HEAP_OPTS=-Xmx512M -Xms256M 
     - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
-    - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.1.123:9292
+    - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://172.28.52.120:9292
     - KAFKA_BROKER_ID=2
    volumes:
     - ./kraft/kafka2:/bitnami/kafka
@@ -77,20 +77,7 @@ services:
     - ALLOW_PLAINTEXT_LISTENER=yes
     - KAFKA_HEAP_OPTS=-Xmx512M -Xms256M 
     - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
-    - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.1.123:9392
+    - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://172.28.52.120:9392
     - KAFKA_BROKER_ID=3
    volumes:
     - ./kraft/kafka3:/bitnami/kafka
-  kafka-ui:
-   image: provectuslabs/kafka-ui:latest
-   container_name: kafka-ui
-   restart: always
-   ports:
-    - 8080:8080
-  #  volumes:
-  #   - /etc/localtime:/etc/localtime
-   environment:
-   # 集群名称
-    - KAFKA_CLUSTERS_0_NAME=local
-   # 集群地址
-    - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka1:9092,kafka2:9092,kafka3:9092
