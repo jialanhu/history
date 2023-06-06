@@ -1,0 +1,14 @@
+image: node:lts
+
+cache:
+  paths:
+    - node_modules
+
+test:
+  script:
+    - apt-get update
+    - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    - apt install -y ./google-chrome*.deb
+    - export CHROME_BIN=/usr/bin/google-chrome
+    - npm install
+    - npm run test:ci
