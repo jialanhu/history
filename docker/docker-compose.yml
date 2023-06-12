@@ -104,3 +104,18 @@ services:
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: cwXmMd95WtP8q_RQWov_bUlKi8cXSRmCxrcgGV6SERLIoYv8gqa28hJ6jgukauqMhGJwNAGek9fuWlBPSU2QBw==
     ports: 
       - 8086:8086
+
+  click:
+    image: clickhouse/clickhouse-server
+    container_name: click
+    ports:
+      - "9000:9000"
+      - "8123:8123"
+    environment:
+      CLICKHOUSE_USER: normal
+      CLICKHOUSE_PASSWORD: secret
+    tty: true
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
