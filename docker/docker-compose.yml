@@ -119,3 +119,11 @@ services:
       nofile:
         soft: 262144
         hard: 262144
+
+  cuda:
+    image: nvidia/cuda:11.4.0-cudnn8-devel-ubuntu20.04
+    container_name: cudda
+    network_mode: host
+    stdin_open: true
+    tty: true
+    runtime: nvidia
