@@ -121,7 +121,7 @@ services:
         hard: 262144
 
   cuda:
-    image: nvidia/12.1.1-cudnn8-devel-ubuntu20.04
+    image: nvidia/cuda:12.1.1-cudnn8-devel-ubuntu20.04
     container_name: cuda
     network_mode: host
     stdin_open: true
