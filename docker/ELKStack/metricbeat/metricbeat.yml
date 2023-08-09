@@ -1,0 +1,17 @@
+metricbeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+processors:
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+
+output.elasticsearch:
+  hosts: ['https://localhost:9200']
+  username: 'elastic'
+  password: 'my-password'
+  ssl:
+    enabled: true
+    ca_trusted_fingerprint: "{{yout_ca_fingerprint}}"
+setup.kibana:
+    host: "localhost:5601"
