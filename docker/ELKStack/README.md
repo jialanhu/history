@@ -30,6 +30,7 @@ http://localhost:5601/
 ```bash
 sudo docker cp metricbeat/metricbeat.yml metricbeat:/usr/share/metricbeat/metricbeat.yml
 sudo docker exec -it metricbeat /bin/bash
+chown root metricbeat.yml
 metricbeat test config
 
 metricbeat modules enable docker
