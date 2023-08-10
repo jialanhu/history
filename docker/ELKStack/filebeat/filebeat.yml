@@ -1,0 +1,26 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+## ref https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-input-filestream.html
+filebeat.inputs:
+- type: filestream
+  # edit
+  id: filestream-id
+  paths:
+    - /log/*.log
+
+processors:
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+
+output.elasticsearch:
+  hosts: ['https://localhost:9200']
+  username: 'elastic'
+  password: 'my-password'
+  ssl:
+    enabled: true
+    # edit
+    ca_trusted_fingerprint: "{{your_ca_trusted_fingerprint}}"
+setup.kibana:
+    host: "localhost:5601"

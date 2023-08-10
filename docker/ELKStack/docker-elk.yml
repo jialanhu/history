@@ -14,8 +14,6 @@ services:
     container_name: kibana
     ports:
       - "5601:5601"
-    volumes:
-      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
     depends_on:
       - elasticsearch
   # logstash:
@@ -23,11 +21,16 @@ services:
   #   container_name: logstash
   #   ports:
   #     - "5602:5602"
-  # filebeat:
-  #   image: docker.elastic.co/beats/filebeat:8.8.1
-  #   container_name: filebeat
-  #   volumes:
-  #     - /log:/log
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.8.1
+    container_name: filebeat
+    network_mode: host
+    depends_on:
+      - elasticsearch
+      - kibana
+    volumes:
+    # edit
+      - /log:/log
   metricbeat:
     image: docker.elastic.co/beats/metricbeat:8.8.1
     container_name: metricbeat

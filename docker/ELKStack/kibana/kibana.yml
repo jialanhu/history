@@ -1,19 +1,5 @@
-### >>>>>>> BACKUP START: Kibana interactive setup (2023-08-09T07:42:24.818Z)
-
-#server.host: "0.0.0.0"
-#server.shutdownTimeout: "5s"
-#elasticsearch.hosts: [ "http://elasticsearch:9200" ]
-#monitoring.ui.container.elasticsearch.enabled: true
-#i18n.locale: zh-CN
-### >>>>>>> BACKUP END: Kibana interactive setup (2023-08-09T07:42:24.818Z)
-
-# This section was automatically generated during setup.
-server.host: 0.0.0.0
-server.shutdownTimeout: 5s
-elasticsearch.hosts: ['https://172.20.0.2:9200']
+server.host: "0.0.0.0"
+server.shutdownTimeout: "5s"
+elasticsearch.hosts: [ "http://elasticsearch:9200" ]
 monitoring.ui.container.elasticsearch.enabled: true
 i18n.locale: zh-CN
-elasticsearch.serviceAccountToken: AAEAAWVsYXN0aWMva2liYW5hL2Vucm9sbC1wcm9jZXNzLXRva2VuLTE2OTE1NjY5NDMyOTU6ejl5czNPZDZUbmF2Z2RGbURfR2loUQ
-elasticsearch.ssl.certificateAuthorities: [/usr/share/kibana/data/ca_1691566944793.crt]
-xpack.fleet.outputs: [{id: fleet-default-output, name: default, is_default: true, is_default_monitoring: true, type: elasticsearch, hosts: ['https://172.20.0.2:9200'], ca_trusted_fingerprint: a1f18382168421baea1c5fadf05ac62e246d92f19fd8a0c301c6735e15fe6598}]
-
