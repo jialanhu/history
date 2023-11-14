@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  node1:
+    image: node:lts
+    container_name: node1
+    volumes:
+      - ./server.js:/code/server.js
+    command: node /code/server.js
+  
+  node2:
+    image: node:lts
+    container_name: node2
+    volumes:
+      - ./server.js:/code/server.js
+    command: node /code/server.js
+
+  haproxy:
+    image: haproxy:lts
+    container_name: haproxy
+    ports:
+      - "80:80"
+    sysctls:
+      - net.ipv4.ip_unprivileged_port_start=0
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
