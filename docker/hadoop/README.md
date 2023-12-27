@@ -8,6 +8,8 @@ http://location:8088/
 yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-3.X.X.jar pi 10 15
 
 ### HDFS
+docker exec -it namenode /bin/bash
+
 #### Create Folder
 hadoop fs -ls /
 hadoop fs -mkdir /hello
