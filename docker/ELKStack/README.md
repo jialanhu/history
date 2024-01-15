@@ -28,6 +28,7 @@ http://localhost:5601/
 
 #### metricbeat
 ```bash
+## edit metricbeat.yml -> ca ca-fingerprint and es-password
 sudo docker cp metricbeat/metricbeat.yml metricbeat:/usr/share/metricbeat/metricbeat.yml
 sudo docker exec -it metricbeat /bin/bash
 chown root metricbeat.yml
@@ -46,6 +47,7 @@ sudo docker restart metricbeat
 
 #### filebeat
 ```bash
+## edit filebeat.yml -> ca-fingerprint and es-password
 sudo docker cp filebeat/filebeat.yml filebeat:/usr/share/filebeat/filebeat.yml
 sudo docker exec -it filebeat /bin/bash
 filebeat test config
