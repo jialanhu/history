@@ -1,0 +1,55 @@
+version: "3"
+services:
+  elasticsearch:
+    image: elasticsearch:${ELASTIC_VERSION}
+    container_name: elasticsearch
+    hostname: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: -Xms512m -Xmx512m # memory limit
+  kibana:
+    image: kibana:${ELASTIC_VERSION}
+    container_name: kibana
+    hostname: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+  # TODO
+  # logstash: 
+  #   image: logstash:8.11.3
+  #   container_name: logstash
+  #   ports:
+  #     - 5044:5044
+  #     - 9600:9600
+  #   environment:
+  #     LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
+  #   volumes:
+  #     - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
+  #     - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
+  #   depends_on:
+  #     - elasticsearch
+  # filebeat:
+  #   image: docker.elastic.co/beats/filebeat:8.11.3
+  #   container_name: filebeat
+  #   environment:
+  #     FILEBEAT_INTERNAL_PASSWORD: ${FILEBEAT_INTERNAL_PASSWORD:-}
+  #   depends_on:
+  #     - elasticsearch
+  #     - kibana
+  metricbeat:
+    image: elastic/metricbeat:${ELASTIC_VERSION}
+    container_name: metricbeat
+    user: root
+    environment:
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD}
+      CA_FINGERPRINT: ${CA_FINGERPRINT}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    depends_on:
+      - elasticsearch
+      - kibana

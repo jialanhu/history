@@ -1,57 +1,35 @@
 ### command
 ```bash
-sudo docker compose -f docker-elk.yml up -d
+docker compose up -d
 ```
 #### elasticsearch
 ```bash
-sudo docker exec -it elasticsearch /bin/bash
-## get your ca fingerprint
-openssl x509 -fingerprint -sha256 -in config/certs/http_ca.crt | awk -F= '{print $2}' | tr -d : | tr -d '\n'
-## reset elasticsearch password
-elasticsearch-reset-password -u elastic -i
-## gen kabana token
-elasticsearch-create-enrollment-token -s kibana
-exit
+elasticsearch/setup.sh
 ```
 
 #### kibana
 ```bash
-## replace kibana.yml
-sudo docker cp kibana/kibana.yml kibana:/usr/share/kibana/config/kibana.yml
-sudo docker restart kibana
-## get kibana verification-code
-sudo docker exec kibana kibana-verification-code
 ## open kibana web
 http://localhost:5601/
+## enter .env -> KIBANA_TOKE
 
+## get kibana verification-code
+docker exec kibana kibana-verification-code
 ```
 
 #### metricbeat
 ```bash
-## edit metricbeat.yml -> ca ca-fingerprint and es-password
-sudo docker cp metricbeat/metricbeat.yml metricbeat:/usr/share/metricbeat/metricbeat.yml
-sudo docker exec -it metricbeat /bin/bash
-chown root metricbeat.yml
-metricbeat test config
-
-metricbeat modules enable docker
-## https://www.elastic.co/guide/en/beats/metricbeat/8.8/metricbeat-module-docker.html
-
-metricbeat setup -e
-## -e is optional and sends output to standard error instead of the configured log output.
-exit
-
-## restart metricbeat
-sudo docker restart metricbeat
+metricbeat/setup.sh
 ```
 
+<!-- TODO
 #### filebeat
 ```bash
 ## edit filebeat.yml -> ca-fingerprint and es-password
-sudo docker cp filebeat/filebeat.yml filebeat:/usr/share/filebeat/filebeat.yml
-sudo docker exec -it filebeat /bin/bash
+docker cp filebeat/filebeat.yml filebeat:/usr/share/filebeat/filebeat.yml
+docker exec -it filebeat /bin/bash
 filebeat test config
 filebeat setup -e
 exit
-sudo docker restart filebeat
-```
+docker restart filebeat
+``` -->

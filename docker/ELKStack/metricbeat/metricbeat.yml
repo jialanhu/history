@@ -7,11 +7,11 @@ processors:
   - add_docker_metadata: ~
 
 output.elasticsearch:
-  hosts: ['https://localhost:9200']
+  hosts: ['https://elasticsearch:9200']
   username: 'elastic'
-  password: 'my-password'
+  password: '${ELASTICSEARCH_PASSWORD}'
   ssl:
     enabled: true
-    ca_trusted_fingerprint: "{{yout_ca_fingerprint}}"
+    ca_trusted_fingerprint: '${CA_FINGERPRINT}'
 setup.kibana:
-    host: "localhost:5601"
+    host: "kibana:5601"
