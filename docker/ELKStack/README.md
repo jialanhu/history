@@ -1,23 +1,30 @@
-### command
+## run all
 ```bash
 docker compose up -d
 ```
-#### elasticsearch
+### elasticsearch
+> generate `CA_FINGERPRINT` and `KIBANA_TOKEN`  
+> reset [built-in-users](https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html) password (randomly-generated)  
 ```bash
 elasticsearch/setup.sh
 ```
 
-#### kibana
-```bash
-## open kibana web
+### kibana
+#### open kibana web
 http://localhost:5601/
-## enter .env -> KIBANA_TOKE
-
-## get kibana verification-code
+#### cat KIBANA_TOKEN
+```bash
+cat .env |grep KIBANA_TOKEN
+```
+#### generate kibana verification-code
+```bash
 docker exec kibana kibana-verification-code
 ```
 
-#### metricbeat
+### metricbeat
+> refresh env
+> refresh metricbeat config
+> enable docker module and setup
 ```bash
 metricbeat/setup.sh
 ```

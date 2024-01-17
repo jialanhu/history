@@ -14,3 +14,4 @@ docker exec metricbeat bash -c '
     metricbeat modules enable docker;
     metricbeat setup -e;
 ';
+docker restart metricbeat;
