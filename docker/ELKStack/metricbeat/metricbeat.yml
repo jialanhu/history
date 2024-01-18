@@ -9,7 +9,7 @@ processors:
 output.elasticsearch:
   hosts: [ https://elasticsearch:9200 ]
   username: elastic
-  password: ${ELASTICSEARCH_PASSWORD}
+  password: ${ELASTIC_PASSWORD}
   ssl:
     enabled: true
     ca_trusted_fingerprint: ${CA_FINGERPRINT}
