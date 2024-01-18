@@ -5,8 +5,7 @@ filebeat.config:
 ## ref https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-input-filestream.html
 filebeat.inputs:
 - type: filestream
-  # edit
-  id: filestream-id
+  id: filestream-example-id
   paths:
     - /log/*.log
 
@@ -14,13 +13,11 @@ processors:
   - add_cloud_metadata: ~
   - add_docker_metadata: ~
 
+#  default index is ".ds-filebeat-%{[agent.version]}-%{+yyyy.MM.dd}-%{index_num}", for example, ".ds-filebeat-8.11.3-2024.01.18-000001"
 output.elasticsearch:
-  hosts: ['https://localhost:9200']
-  username: 'elastic'
-  password: 'my-password'
+  hosts: [ https://elasticsearch:9200 ]
+  username: elastic
+  password: ${ELASTIC_PASSWORD}
   ssl:
     enabled: true
-    # edit
-    ca_trusted_fingerprint: "{{your_ca_trusted_fingerprint}}"
-setup.kibana:
-    host: "localhost:5601"
+    ca_trusted_fingerprint: ${CA_FINGERPRINT}

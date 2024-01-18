@@ -30,15 +30,6 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
     depends_on:
       - elasticsearch
-  # TODO
-  # filebeat:
-  #   image: docker.elastic.co/beats/filebeat:8.11.3
-  #   container_name: filebeat
-  #   environment:
-  #     FILEBEAT_INTERNAL_PASSWORD: ${FILEBEAT_INTERNAL_PASSWORD:-}
-  #   depends_on:
-  #     - elasticsearch
-  #     - kibana
   metricbeat:
     image: elastic/metricbeat:${ELASTIC_VERSION}
     container_name: metricbeat
@@ -52,3 +43,11 @@ services:
     depends_on:
       - elasticsearch
       - kibana
+  filebeat:
+    image: elastic/filebeat:${ELASTIC_VERSION}
+    container_name: filebeat
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      CA_FINGERPRINT: ${CA_FINGERPRINT}
+    depends_on:
+      - elasticsearch
