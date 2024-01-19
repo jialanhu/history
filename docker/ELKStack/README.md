@@ -33,8 +33,17 @@ docker exec kibana kibana-verification-code
 
 ### logstash
 
-> input from jdbc
+> edit logstash/pipeline/logstash.conf
+
+#### input from jdbc
+
 > copy cert and setup jdbc_driver_library
+
+```basj
+logstash/setup.sh jdbc
+```
+
+#### input from other
 
 ```basj
 logstash/setup.sh

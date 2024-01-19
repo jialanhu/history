@@ -1,7 +1,7 @@
 version: "3"
 services:
   elasticsearch:
-    image: elasticsearch:${ELASTIC_VERSION}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
     container_name: elasticsearch
     hostname: elasticsearch
     ports:
@@ -9,29 +9,30 @@ services:
       - "9300:9300"
     environment:
       discovery.type: single-node
-      ES_JAVA_OPTS: -Xms512m -Xmx512m # memory limit
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
   kibana:
-    image: kibana:${ELASTIC_VERSION}
+    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
     container_name: kibana
     ports:
       - "5601:5601"
     depends_on:
       - elasticsearch
   logstash: 
-    image: logstash:${ELASTIC_VERSION}
+    image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION}
     container_name: logstash
     ports:
       - 5044:5044
       - 9600:9600
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      LS_JAVA_OPTS: -Xms256m -Xmx256m
     volumes:
       - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
     depends_on:
       - elasticsearch
   metricbeat:
-    image: elastic/metricbeat:${ELASTIC_VERSION}
+    image:  docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
     container_name: metricbeat
     user: root
     environment:
@@ -44,7 +45,7 @@ services:
       - elasticsearch
       - kibana
   filebeat:
-    image: elastic/filebeat:${ELASTIC_VERSION}
+    image: docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}
     container_name: filebeat
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
