@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  hbase:
+    image: hbase:2.5.7
+    container_name: hbase
+    tty: true
+    ports:
+      - "8080:8080"
+      - "16010:16010"
+      
