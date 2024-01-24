@@ -28,7 +28,8 @@ services:
       LS_JAVA_OPTS: -Xms256m -Xmx256m
     volumes:
       - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - ./logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
+      - ./logstash/pipelines:/usr/share/logstash/pipelines:ro
     depends_on:
       - elasticsearch
   metricbeat:
