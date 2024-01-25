@@ -93,19 +93,6 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_INITDB_ARGS: --auth=md5 # 使用不支持 scram-sha-256 登录时设置
 
-  influx:
-    image: influxdb:latest
-    container_name: influx
-    environment:
-      DOCKER_INFLUXDB_INIT_MODE: setup
-      DOCKER_INFLUXDB_INIT_USERNAME: rooot
-      DOCKER_INFLUXDB_INIT_PASSWORD: my-password ## least 8 char
-      DOCKER_INFLUXDB_INIT_ORG: my-org
-      DOCKER_INFLUXDB_INIT_BUCKET: my-bucket
-      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: cwXmMd95WtP8q_RQWov_bUlKi8cXSRmCxrcgGV6SERLIoYv8gqa28hJ6jgukauqMhGJwNAGek9fuWlBPSU2QBw==
-    ports: 
-      - 8086:8086
-
   click:
     image: clickhouse/clickhouse-server
     container_name: click
