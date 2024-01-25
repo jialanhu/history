@@ -40,19 +40,6 @@ services:
     # 无法使用caching_sha2_password进行连接时
     command: --default-authentication-plugin=mysql_native_password
 
-  nginx:
-    image: nginx
-    container_name: nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/:/etc/nginx/conf.d
-      # nginx 访问日志
-      - ./nginx/log:/var/log/nginx
-      - /code:/code
-    environment:
-      TZ: Asia/Shanghai
-
   jenkins:
     image: jenkinsci/blueocean
     container_name: jenkins
