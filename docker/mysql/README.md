@@ -14,15 +14,7 @@ mysql -u root -p
 CHANGE MASTER TO MASTER_HOST='mysql-master',MASTER_USER='root',MASTER_PASSWORD='secret';
 START SLAVE;
 
-```
-
-### check slave status
-```bash
-docker exec -it mysql-slave /bin/bash
-
-mysql -u root -p
-# enter password
-
+# check slave status
 SHOW SLAVE STATUS \G
 ```
 |||
