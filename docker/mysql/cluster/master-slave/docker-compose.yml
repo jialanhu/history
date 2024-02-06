@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  mysql-master:
+    image: mysql:8.0
+    container_name: mysql-master
+    hostname: mysql-master
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./master.cnf:/etc/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+
+  mysql-slave:
+    image: mysql:8.0
+    container_name: mysql-slave
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./slave.cnf:/etc/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
