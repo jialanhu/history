@@ -1,11 +1,18 @@
 version: "3"
 
 services:
-  mysql-ssl:
+  mysql-ssl-auto:
     image: mysql:8.0
-    container_name: mysql-ssl
+    container_name: mysql-ssl-auto
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: secret
       auto_generate_certs: true
+  mysql-ssl-manual:
+    image: mysql:8.0
+    container_name: mysql-ssl-manual
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
