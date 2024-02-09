@@ -19,9 +19,9 @@ docker restart mysql-ssl-auto
 >
 
 ```bash
-docker cp mysql-ssl-auto:/var/lib/mysql/ca.pem ./CA.crt
-docker cp mysql-ssl-auto:/var/lib/mysql/client-key.pem ./client.key
-docker cp mysql-ssl-auto:/var/lib/mysql/client-cert.pem ./client.crt
+docker cp mysql-ssl-auto:/var/lib/mysql/ca.pem ./ca.pem
+docker cp mysql-ssl-auto:/var/lib/mysql/client-key.pem ./client-key.pem
+docker cp mysql-ssl-auto:/var/lib/mysql/client-cert.pem ./client-cert.pem
 ```
 
 ## Manual SSL and RSA File Generation
@@ -41,9 +41,9 @@ docker compose up -d mysql-ssl-manual
 ### Setup
 
 ```bash
-docker cp ./CA.crt  mysql-ssl-manual:/var/lib/mysql/ca.pem
-docker cp ./server.key mysql-ssl-manual:/var/lib/mysql/server-key.pem
-docker cp ./server.crt mysql-ssl-manual:/var/lib/mysql/server-cert.pem
+docker cp ./ca.pem  mysql-ssl-manual:/var/lib/mysql/ca.pem
+docker cp ./server-key.pem mysql-ssl-manual:/var/lib/mysql/server-key.pem
+docker cp ./server-cert.pem mysql-ssl-manual:/var/lib/mysql/server-cert.pem
 docker cp ./my.cnf mysql-ssl-manual:/etc/my.cnf
 
 docker restart mysql-ssl-manual
@@ -52,5 +52,5 @@ docker restart mysql-ssl-manual
 ## connect mysql
 
 ```bash
-mysql -u root -h 127.0.0.1 --ssl-ca=./CA.crt --ssl-cert=./client.crt --ssl-key=./client.key --password=secret
+mysql -u root -h 127.0.0.1 --ssl-ca=./ca.pem --ssl-cert=./client-cert.pem --ssl-key=./client-key.pem --password=secret
 ```
