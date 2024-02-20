@@ -67,3 +67,17 @@ metricbeat/setup.sh
 ```bash
 filebeat/setup.sh
 ```
+
+### apm-server
+####  Set up and configure
+##### Install the APM integration
+1. Open Kibana and select Add integrations > Elastic APM.
+2. Click APM integration.
+3. Click Add Elastic APM.
+4. Click Save and continue.
+5. Click Add Elastic Agent later.
+
+#### Setup 
+```bash
+apm-server/setup.sh
+```

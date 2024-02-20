@@ -1,0 +1,19 @@
+######################### APM Server Configuration #########################
+# https://raw.githubusercontent.com/elastic/apm-server/8.12/apm-server.docker.yml
+################################ APM Server ################################
+
+apm-server:
+  host: "0.0.0.0:8200"
+
+ 
+#================================ Outputs =================================
+
+#-------------------------- Elasticsearch output --------------------------
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  enabled: true
+  protocol: "https"
+  username: "elastic"
+  password: ${ELASTIC_PASSWORD}
+  ssl.enabled: true
+  ssl.certificate_authorities: ["/usr/share/apm-server/config/certs/http_ca.crt"]

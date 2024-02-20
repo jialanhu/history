@@ -5,8 +5,8 @@ services:
     container_name: elasticsearch
     hostname: elasticsearch
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - 9200:9200
+      - 9300:9300
     environment:
       discovery.type: single-node
       ES_JAVA_OPTS: -Xms512m -Xmx512m
@@ -14,10 +14,10 @@ services:
     image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
     container_name: kibana
     ports:
-      - "5601:5601"
+      - 5601:5601
     depends_on:
       - elasticsearch
-  logstash: 
+  logstash:
     image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION}
     container_name: logstash
     ports:
@@ -33,7 +33,7 @@ services:
     depends_on:
       - elasticsearch
   metricbeat:
-    image:  docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
+    image: docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION}
     container_name: metricbeat
     user: root
     environment:
@@ -53,3 +53,16 @@ services:
       CA_FINGERPRINT: ${CA_FINGERPRINT}
     depends_on:
       - elasticsearch
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:${ELASTIC_VERSION}
+    container_name: apm-server
+    hostname: apm-server
+    ports:
+      - 8200:8200
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      CA_FINGERPRINT: ${CA_FINGERPRINT}
+    command: --strict.perms=false -e
+    depends_on:
+      - elasticsearch
+      - kibana
