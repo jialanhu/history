@@ -1,6 +1,6 @@
 package-lock.json
 node_modules
-*/logs
+**/logs
 */config/*.js
 !*/config/*.example.js
 .idea/
